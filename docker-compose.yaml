@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:16.0
+    container_name: postgres
+    environment:
+      POSTGRES_DB: wallet
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+  golang:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: golang
+    depends_on:
+      - postgres
+    ports:
+      - "1323:1323"
+    env_file:
+      - .env
+
+volumes:
+  pgdata:
